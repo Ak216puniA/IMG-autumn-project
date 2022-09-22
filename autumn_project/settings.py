@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import environ
+
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-+-h8m(i(n_@k)=)!cs))qotivrww9k%q0g#y(zxg)59sabiof5'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -83,9 +87,9 @@ DATABASES = {
             'charset': 'utf8mb4',
             'sql_mode':'STRICT_TRANS_TABLES'
         },
-        'NAME': 'IMG_autumn_project',
-        'USER': 'root',
-        'PASSWORD': '@SequentialHeart198',
+        'NAME': env('DATABASE_NAME'),
+        'USER': env('DATABASE_USER'),
+        'PASSWORD': env('DATABASE_PASS'),
         'HOST':'localhost',
         'PORT':'3306',
         # default-character-set = utf8mb4
