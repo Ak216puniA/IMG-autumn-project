@@ -9,9 +9,10 @@ class Users(models.Model):
     year=models.IntegerField()
 
 class Recruitment_seasons(models.Model):
-    academic_year=models.CharField(max_length=16)
+    name=models.CharField(max_length=16)
     start=models.DateField(auto_now_add=True)
     end=models.DateField()
+    description=models.TextField()
 
     class TypeOfSeason(models.TextChoices):
         DEVELOPER = 'developer', _('Developer')
@@ -33,27 +34,27 @@ class Sections(models.Model):
     round_id=models.ForeignKey(Rounds,on_delete=models.CASCADE)
     name=models.CharField(max_length=255)
     weightage=models.IntegerField()
-    assignee=models.ForeignKey(Users,on_delete=models.CASCADE)
+    # assignee=models.ForeignKey(Users,on_delete=models.CASCADE)
 
 class Questions(models.Model):
     section_id=models.ForeignKey(Sections,on_delete=models.CASCADE)
     text=models.TextField()
     marks=models.IntegerField()
-    assignee=models.ForeignKey(Users,on_delete=models.CASCADE)
+    assignee=models.ForeignKey(Users,on_delete=models.CASCADE,null=True)
 
 class Candidates(models.Model):
-    season_id=models.ForeignKey(Recruitment_seasons,on_delete=models.CASCADE)
+    current_season_id=models.ForeignKey(Recruitment_seasons,on_delete=models.CASCADE)
     name=models.CharField(max_length=255)
     email=models.EmailField(max_length=255)
     enrollment_no=models.IntegerField()
     mobile_no=models.CharField(max_length=16)
     cg=models.DecimalField(max_digits=2,decimal_places=2)
-    round_id=models.ForeignKey(Rounds,on_delete=models.CASCADE)
+    current_round_id=models.ForeignKey(Rounds,on_delete=models.CASCADE)
 
 class Interview_panel(models.Model):
     season_id=models.ForeignKey(Recruitment_seasons,on_delete=models.CASCADE)
     panel_name=models.CharField(max_length=64)
-    panelist=models.ManyToManyField(Sections)
+    panelist=models.ManyToManyField(Users)
     location=models.CharField(max_length=64)
 
     class StatusOfPanel(models.TextChoices):
@@ -63,10 +64,11 @@ class Interview_panel(models.Model):
 
     status=models.CharField(max_length=16,choices=StatusOfPanel.choices,default=StatusOfPanel.IDLE)
 
-class Candidate_marks(models.Model):
+class CandidateMarks(models.Model):
     candidate_id=models.ForeignKey(Candidates,on_delete=models.CASCADE)
     question_id=models.ForeignKey(Questions,on_delete=models.CASCADE)
     marks=models.IntegerField()
+    remarks=models.TextField()
 
     class StatusOfQuestion(models.TextChoices):
         CHECKED = 'checked', _('Checked')
@@ -74,17 +76,18 @@ class Candidate_marks(models.Model):
 
     status=models.CharField(max_length=16,choices=StatusOfQuestion.choices,default=StatusOfQuestion.UNCHECKED)
 
-class Candidate_round(models.Model):
+class CandidateRound(models.Model):
     candidate_id=models.ForeignKey(Candidates,on_delete=models.CASCADE)
     round_id=models.ForeignKey(Rounds,on_delete=models.CASCADE)
     remark=models.TextField()
-    interview_panel=models.ManyToManyField(Interview_panel)
+    interview_panel=models.ForeignKey(Interview_panel)
     time_slot=models.CharField(max_length=64)
-
+    total_marks=models.IntegerField()
+    
     class StatusOfRound(models.TextChoices):
         NOT_NOTIFIED = 'not_notified', _('Not Notified')
         NOTIFIED = 'notified', _('Notified')
-        WAITING_ROOM = 'waiting_room', _('In Waiting cRoom')
+        WAITING_ROOM = 'waiting_room', _('In Waiting Room')
         INTERVIEW = 'interview', _('In Interview')
         DONE = 'done', _('Done')
 
