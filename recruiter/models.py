@@ -21,7 +21,7 @@ class Users(AbstractUser):
 
     userpart=models.CharField(max_length=16,choices=UserpartForUser.choices,default=UserpartForUser.DEVELOPER)
     year=models.IntegerField()
-    image=models.TextField()
+    image=models.TextField(null=True)
 
     def __str__(self):
         return self.username
@@ -37,7 +37,7 @@ class RecruitmentSeasons(models.Model):
         DESIGNER = 'designer', _('Designer')
 
     type=models.CharField(max_length=16,choices=TypeOfSeason.choices,blank=False,default=TypeOfSeason.DEVELOPER)
-    image=models.TextField()
+    image=models.TextField(null=True)
 
     def __str__(self):
         return self.name
@@ -120,7 +120,7 @@ class CandidateRound(models.Model):
     candidate_id=models.ForeignKey(Candidates,on_delete=models.CASCADE)
     round_id=models.ForeignKey(Rounds,on_delete=models.CASCADE)
     remark=models.TextField()
-    interview_panel=models.ForeignKey(InterviewPanel)
+    interview_panel=models.ForeignKey(InterviewPanel,on_delete=models.CASCADE)
     time_slot=models.CharField(max_length=64)
     total_marks=models.IntegerField()
 
