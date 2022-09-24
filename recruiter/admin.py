@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Users,RecruitmentSeasons,Rounds,Sections,Questions,Candidates,InterviewPanel,CandidateMarks,CandidateRound,CandidateProjectLink
+from .models import *
 
 
 admin.site.register(Users)
