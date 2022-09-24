@@ -3,25 +3,17 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractUser
 
-# class Users(models.Model):
-#     username=models.CharField(max_length=255)
-#     useremail=models.EmailField(max_length=255)
-#     userpass=models.CharField(max_length=255)
-#     userpart=models.CharField(max_length=10)
-#     year=models.IntegerField()
-
 class Users(AbstractUser):
     first_name=None
     last_name=None
-    is_staff=None
 
     class UserpartForUser(models.TextChoices):
         DEVELOPER = 'developer', _('Developer')
         DESIGNER = 'designer', _('Designer')
 
     userpart=models.CharField(max_length=16,choices=UserpartForUser.choices,default=UserpartForUser.DEVELOPER)
-    year=models.IntegerField()
-    image=models.TextField(null=True)
+    year=models.IntegerField(default=0)
+    image=models.ImageField(null=True)
 
     def __str__(self):
         return self.username
@@ -37,7 +29,7 @@ class RecruitmentSeasons(models.Model):
         DESIGNER = 'designer', _('Designer')
 
     type=models.CharField(max_length=16,choices=TypeOfSeason.choices,blank=False,default=TypeOfSeason.DEVELOPER)
-    image=models.TextField(null=True)
+    image=models.ImageField(null=True)
 
     def __str__(self):
         return self.name
@@ -59,7 +51,6 @@ class Sections(models.Model):
     round_id=models.ForeignKey(Rounds,on_delete=models.CASCADE)
     name=models.CharField(max_length=255)
     weightage=models.IntegerField()
-    # assignee=models.ForeignKey(Users,on_delete=models.CASCADE)
 
     # def __str__(self):
     #     return self.name
@@ -74,7 +65,6 @@ class Questions(models.Model):
         return self.text
 
 class Candidates(models.Model):
-    # current_season_id=models.ForeignKey(Recruitment_seasons,on_delete=models.CASCADE)
     name=models.CharField(max_length=255)
     email=models.EmailField(max_length=255)
     enrollment_no=models.IntegerField()
