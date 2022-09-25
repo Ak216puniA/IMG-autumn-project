@@ -94,7 +94,7 @@ class InterviewPanel(models.Model):
 class CandidateMarks(models.Model):
     candidate_id=models.ForeignKey(Candidates,on_delete=models.CASCADE)
     question_id=models.ForeignKey(Questions,on_delete=models.CASCADE)
-    marks=models.IntegerField()
+    marks=models.IntegerField(default=0)
     remarks=models.TextField()
 
     class StatusOfQuestion(models.TextChoices):
@@ -121,7 +121,7 @@ class CandidateRound(models.Model):
         INTERVIEW = 'interview', _('In Interview')
         DONE = 'done', _('Done')
 
-    status=models.CharField(max_length=16,choices=StatusOfRound.choices,default=StatusOfRound.NOT_NOTIFIED)
+    status=models.CharField(max_length=16,choices=StatusOfRound.choices,null=True)
 
     def __str__(self):
         return self.candidate_id
