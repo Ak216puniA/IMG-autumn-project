@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from models import *
+from .models import *
 
 # User model serializers
 
@@ -91,7 +91,7 @@ class CandidatesNameSerializer(serializers.ModelSerializer):
 
 class InterviewPanelSerializer(serializers.ModelSerializer):
     season_id = RecruitmentSeasonsNameSerializer()
-    panelist = UserNameSerializer()
+    panelist = UserNameSerializer(many=True)
     class Model:
         model = InterviewPanel
         fields = '__all__'
