@@ -6,6 +6,7 @@ from rest_framework import viewsets
 from rest_framework.views import APIView
 import environ
 import requests
+from auth import get_user_data,check_and_create_user
 
 env = environ.Env()
 environ.Env.read_env()
@@ -66,16 +67,25 @@ class GetAuthTokenView(APIView):
             AUTH_TOKEN = response_token.json()['access_token']
             AUTH_TOKEN_TYPE = response_token.json()['token_type']
 
-            user_data_url = env('USER_DATA_URL')
-            headers = { 'Authentication' : AUTH_TOKEN_TYPE+' '+AUTH_TOKEN}
+            login_view_url = 'http://localhost:8000/auth/login/'
+            token = AUTH_TOKEN_TYPE+' '+AUTH_TOKEN
+            token_data={'token' : token}
 
-            response_user_data = requests.get(url=user_data_url, headers=headers)
+            response_login_view = requests.post(url=login_view_url, data=token_data)
 
-
-
-
-
+            if response_login_view.status_code==200:
+                return Response(response_login_view.json())
+            return Response(response_login_view.json())
+        return Response(response_token.json())
 
 class LoginView(APIView):
-    def get(self,request):
-        return Response({'msg':'Here is your request'})
+    def post(self, request, format=None):
+        token = request.data['token']
+        user_data = get_user_data(token)
+
+        if user_data is not None:
+            if user_data['is_maintainer']:
+                new_user = check_and_create_user(user_data)
+        return Response({'New user created':new_user, 'User data':user_data})
+
+# TO-DO : Permissions and Exception handling

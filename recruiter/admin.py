@@ -52,3 +52,5 @@ class CandidateRoundAdmin(admin.ModelAdmin):
 @admin.register(CandidateMarks)
 class CandidateMarksAdmin(admin.ModelAdmin):
     list_display = ['id','candidate_id','question_id','status','marks']
+
+# TO-DO : Improve admin site readability
