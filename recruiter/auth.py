@@ -2,6 +2,7 @@ from unicodedata import is_normalized
 import requests
 import environ
 from .models import Users
+from rest_framework.authentication import BaseAuthentication
 
 env = environ.Env()
 environ.Env.read_env()

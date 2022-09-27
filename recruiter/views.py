@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 import environ
 import requests
 from auth import get_user_data,check_and_create_user
+from permissions import YearWisePermission, SuperUserPermission
 
 env = environ.Env()
 environ.Env.read_env()
@@ -14,42 +15,52 @@ environ.Env.read_env()
 class UsersModelViewSet(viewsets.ModelViewSet):
     queryset=Users.objects.all()
     serializer_class=UserSerializer
+    permission_classes=[SuperUserPermission]
 
 class RecruitmentSeasonsModelViewSet(viewsets.ModelViewSet):
     queryset=RecruitmentSeasons.objects.all()
     serializer_class=RecruitmentSeasonsSerializer
+    permission_classes=[YearWisePermission]
 
 class RoundsModelViewSet(viewsets.ModelViewSet):
     queryset=Rounds.objects.all()
     serializer_class=RoundsSerializer
+    permission_classes=[YearWisePermission]
 
 class SectionsModelViewSet(viewsets.ModelViewSet):
     queryset=Sections.objects.all()
     serializer_class=SectionsSerializer
+    permission_classes=[YearWisePermission]
 
 class QuestionsModelViewSet(viewsets.ModelViewSet):
     queryset=Questions.objects.all()
     serializer_class=QuestionsSerializer
+    permission_classes=[YearWisePermission]
 
 class InterviewPanelModelViewSet(viewsets.ModelViewSet):
     queryset=InterviewPanel.objects.all()
     serializer_class=InterviewPanelSerializer
+    permission_classes=[YearWisePermission]
 
 class CandidatesModelViewSet(viewsets.ModelViewSet):
     queryset=Candidates.objects.all()
     serializer_class=QuestionsSerializer
+    permission_classes=[YearWisePermission]
 
 class CandidateProjectLinkModelViewSet(viewsets.ModelViewSet):
     queryset=CandidateProjectLink.objects.all()
     serializer_class=CandidateProjectLinkSerializer
+    permission_classes=[YearWisePermission]
 
 class CandidateRoundModelViewSet(viewsets.ModelViewSet):
     queryset=CandidateRound.objects.all()
     serializer_class=CandidateRoundSerializer
+    permission_classes=[YearWisePermission]
 
 class CandidateMarksModelViewSet(viewsets.ModelViewSet):
     queryset=CandidateMarks.objects.all()
     serializer_class=CandidateMarksSerializer
+    permission_classes=[YearWisePermission]
 
 class GetAuthTokenView(APIView):
     def get(self, request, code, format=None):

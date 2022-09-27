@@ -84,11 +84,12 @@ class InterviewPanel(models.Model):
     location=models.CharField(max_length=64)
 
     class StatusOfPanel(models.TextChoices):
+        INACTIVE = 'inactive', _('Inactive')
         OCCUPIED = 'occupied', _('Occupied')
         IDLE = 'idle', _('Idle')
         ON_BREAK = 'on_break', _('On Break')
 
-    status=models.CharField(max_length=16,choices=StatusOfPanel.choices,default=StatusOfPanel.IDLE)
+    status=models.CharField(max_length=16,choices=StatusOfPanel.choices,default=StatusOfPanel.INACTIVE)
 
     def __str__(self):
         return self.panel_name
