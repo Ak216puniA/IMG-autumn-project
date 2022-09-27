@@ -6,8 +6,8 @@ from rest_framework import viewsets
 from rest_framework.views import APIView
 import environ
 import requests
-from auth import get_user_data,check_and_create_user
-from permissions import YearWisePermission, SuperUserPermission
+from .user_auth import get_user_data,check_and_create_user
+from .permissions import YearWisePermission, SuperUserPermission
 from rest_framework.permissions import AllowAny
 
 env = environ.Env()
