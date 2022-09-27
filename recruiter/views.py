@@ -8,6 +8,7 @@ import environ
 import requests
 from auth import get_user_data,check_and_create_user
 from permissions import YearWisePermission, SuperUserPermission
+from rest_framework.permissions import AllowAny
 
 env = environ.Env()
 environ.Env.read_env()
@@ -89,6 +90,8 @@ class GetAuthTokenView(APIView):
             return Response(response_login_view.json())
         return Response(response_token.json())
 
+    permission_classes=[AllowAny]
+
 class LoginView(APIView):
     def post(self, request, format=None):
         token = request.data['token']
@@ -99,4 +102,6 @@ class LoginView(APIView):
                 new_user = check_and_create_user(user_data)
         return Response({'New user created':new_user, 'User data':user_data})
 
-# TO-DO : Permissions and Exception handling
+    permission_classes=[AllowAny]
+
+# TO-DO : Exception handling
