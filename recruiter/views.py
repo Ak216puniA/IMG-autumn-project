@@ -1,5 +1,4 @@
 from rest_framework.response import Response
-from django.shortcuts import render
 from .serializers import *
 from .models import *
 from rest_framework import viewsets
@@ -9,6 +8,7 @@ import requests
 from .user_auth import get_user_data,check_and_create_user
 from .permissions import YearWisePermission, SuperUserPermission
 from rest_framework.permissions import AllowAny
+from requests import exceptions
 
 env = environ.Env()
 environ.Env.read_env()
@@ -64,7 +64,13 @@ class CandidateMarksModelViewSet(viewsets.ModelViewSet):
     permission_classes=[YearWisePermission]
 
 class GetAuthTokenView(APIView):
+    permission_classes=[AllowAny]
     def get(self, request, code, format=None):
+        view_response={
+            'succesful' : False,
+            'desc' : ''
+        }
+
         token_url=env('AUTH_TOKEN_URL')
         request_data = {
             'grant_type':'authorization_code',
@@ -73,26 +79,49 @@ class GetAuthTokenView(APIView):
             'client_id' : env('CLIENT_ID'),
             'client_secret' : env('CLIENT_SECRET'),
         }
-        response_token = requests.post(url=token_url, data=request_data)
+        try:
+            response_token = requests.post(url=token_url, data=request_data)
+        # except exceptions.ConnectionError as e:
+        #     message='Connection error when requesting for auth_token'
+        #     desc=e
+        # except exceptions.Timeout as e:
+        #     message='Timeout when requesting for auth_token'
+        #     desc=e
+        # except exceptions.HTTPError as e:
+        #     message='Invalid response when requesting for auth_token'
+        #     desc=e
+        # except Exception as e:
+        #     message='Error occured when requesting for auth_token:'
+        #     desc=e
+        except Exception as e:
+            view_response['succesful']=False
+            view_response['desc']=e
+        else:
+            if response_token.status_code==200:
+                view_response['succesful']=False
+                view_response['desc']=response_token.json()
 
-        if response_token.status_code==200:
-            AUTH_TOKEN = response_token.json()['access_token']
-            AUTH_TOKEN_TYPE = response_token.json()['token_type']
+                AUTH_TOKEN = response_token.json()['access_token']
+                AUTH_TOKEN_TYPE = response_token.json()['token_type']
 
-            login_view_url = 'http://localhost:8000/auth/login/'
-            token = AUTH_TOKEN_TYPE+' '+AUTH_TOKEN
-            token_data={'token' : token}
+                login_view_url = 'http://localhost:8000/auth/login/'
+                token = AUTH_TOKEN_TYPE+' '+AUTH_TOKEN
+                token_data={'token' : token}
 
-            response_login_view = requests.post(url=login_view_url, data=token_data)
+                try:
+                    response_login_view = requests.post(url=login_view_url, data=token_data)
+                except Exception as e:
+                    view_response['succesful']=False
+                    view_response['desc']=e
+                else:           
+                    if response_login_view.status_code==200:
+                        view_response['succesful']=True
+                        view_response['desc']=response_login_view.json()
 
-            if response_login_view.status_code==200:
-                return Response(response_login_view.json())
-            return Response(response_login_view.json())
-        return Response(response_token.json())
-
-    permission_classes=[AllowAny]
+        return Response(view_response)
 
 class LoginView(APIView):
+    permission_classes=[AllowAny]
     def post(self, request, format=None):
         token = request.data['token']
         user_data = get_user_data(token)
@@ -100,8 +129,4 @@ class LoginView(APIView):
         if user_data is not None:
             if user_data['is_maintainer']:
                 new_user = check_and_create_user(user_data)
-        return Response({'New user created':new_user, 'User data':user_data})
-
-    permission_classes=[AllowAny]
-
-# TO-DO : Exception handling
+        return Response({'New user created':new_user, 'User data':user_data})  

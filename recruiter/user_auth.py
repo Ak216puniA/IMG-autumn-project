@@ -19,11 +19,14 @@ def get_auth_code():
         response = requests.post(url=auth_code_url, data=request_data)
         if response.status_code==200:
             return True
-    except exceptions.ConnectionError as e:
-        print("Connection error when requesting for auth_code:")
-        print(e)
-    except exceptions.Timeout as e:
-        print("Timeout when requesting for auth_code:")
+    # except exceptions.ConnectionError as e:
+    #     print("Connection error when requesting for auth_code:")
+    #     print(e)
+    # except exceptions.Timeout as e:
+    #     print("Timeout when requesting for auth_code:")
+    #     print(e)
+    except Exception as e:
+        print('Exception occured when requesting for AUTHERIZATION CODE:')
         print(e)
     return False
 
@@ -34,17 +37,20 @@ def get_user_data(token):
 
     try:
         response_user_data = requests.get(url=user_data_url, headers=user_data_headers)
-    except exceptions.HTTPError as e:
-        print("Invalid response when requesting for user_data:")
-        print(e)
-    except exceptions.ConnectionError as e:
-        print("Connection error when requesting for user_data:")
-        print(e)
-    except exceptions.Timeout as e:
-        print("Timeout when requesting for user_data:")
-        print(e)
-    except response_user_data.raise_for_status() as e:
-        print("Invalid url when requesting for user_data")
+    # except exceptions.HTTPError as e:
+    #     print("Invalid response when requesting for user_data:")
+    #     print(e)
+    # except exceptions.ConnectionError as e:
+    #     print("Connection error when requesting for user_data:")
+    #     print(e)
+    # except exceptions.Timeout as e:
+    #     print("Timeout when requesting for user_data:")
+    #     print(e)
+    # except response_user_data.raise_for_status() as e:
+    #     print("Invalid url when requesting for user_data")
+    #     print(e)
+    except Exception as e:
+        print("Exception occured when requesting for USER DATA:")
         print(e)
     else:
         if response_user_data.status_code==200:
@@ -93,4 +99,4 @@ def check_and_create_user(user_data):
         new_user.save()
         return True
 
-# TO-DO : Exception handling
+# TO-DO : Exception handling : InvildJSONError handling in get_user_data function
