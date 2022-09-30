@@ -1,4 +1,6 @@
+from http.client import responses
 from unicodedata import is_normalized
+from urllib import response
 import requests
 import environ
 from .models import Users
@@ -13,27 +15,39 @@ def get_auth_code():
     request_data = {
         'response_type' : 'code',
         'client_id' : env('CLIENT_ID'),
+        # 'client_id' : 'https://channeli.in',
+        # 'client_id' : 'https://internet.channeli.in/oauth/authorise/',
         'redirect_url' : 'http://localhost:8000/auth/auth-token/'
     }
-    try:
-        response = requests.post(url=auth_code_url, data=request_data)
-        if response.status_code==200:
-            return True
-    # except exceptions.ConnectionError as e:
-    #     print("Connection error when requesting for auth_code:")
+    response = requests.get(url=auth_code_url, headers=request_data)
+    print(response)
+    return response.status_code
+    # try:
+    #     response = requests.post(url=auth_code_url, data=request_data)
+    #     if response.status_code==200:
+    #         return True
+    # # except exceptions.ConnectionError as e:
+    # #     print("Connection error when requesting for auth_code:")
+    # #     print(e)
+    # # except exceptions.Timeout as e:
+    # #     print("Timeout when requesting for auth_code:")
+    # #     print(e)
+    # except Exception as e:
+    #     print('Exception occured when requesting for AUTHERIZATION CODE:')
     #     print(e)
-    # except exceptions.Timeout as e:
-    #     print("Timeout when requesting for auth_code:")
-    #     print(e)
-    except Exception as e:
-        print('Exception occured when requesting for AUTHERIZATION CODE:')
-        print(e)
     return False
 
 
 def get_user_data(token):
     user_data_url = env('USER_DATA_URL')
-    user_data_headers = {'Authentication' : token}
+    user_data_headers = {'Authorization' : token}
+    # return 'hello'
+    # response_user_data = requests.get(url=user_data_url, headers=user_data_headers)
+    # roles = response_user_data.json()['person']['roles']
+    # for role in roles:
+    #     if role['role']=='Maintainer':
+    #         return role
+    # return response_user_data.json()['person']['roles']
 
     try:
         response_user_data = requests.get(url=user_data_url, headers=user_data_headers)
@@ -58,8 +72,9 @@ def get_user_data(token):
             user_data = response_user_data.json()
             is_maintainer = False
 
-            for role in user_data['person']['roles']:
-                if role=='Maintainer':
+            user_roles = user_data['person']['roles']
+            for role in user_roles:
+                if role['role']=='Maintainer':
                     is_maintainer=True
                     break
 
