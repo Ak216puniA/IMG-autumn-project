@@ -43,6 +43,7 @@ def get_user_data(token):
     user_data_headers = {'Authorization' : token}
     # return 'hello'
     # response_user_data = requests.get(url=user_data_url, headers=user_data_headers)
+    # return response_user_data.json()
     # roles = response_user_data.json()['person']['roles']
     # for role in roles:
     #     if role['role']=='Maintainer':
@@ -81,11 +82,11 @@ def get_user_data(token):
             if is_maintainer:
                 required_user_data = {
                     'is_maintainer' : is_maintainer,
-                    'username' : user_data['person']['full_name'],
-                    'email' : user_data['contact_information']['institute_webmail_address'],
+                    'username' : user_data['person']['fullName'],
+                    'email' : user_data['contactInformation']['instituteWebmailAddress'],
                     'password' : token,
-                    'year' : user_data['student']['current_year'],
-                    'image' : user_data['person']['display_picture']
+                    'year' : user_data['student']['currentYear'],
+                    'image' : user_data['person']['displayPicture']
                 }
             else:
                 required_user_data = {

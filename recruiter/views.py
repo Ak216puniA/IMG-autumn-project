@@ -113,18 +113,18 @@ class GetAuthTokenView(APIView):
                 token = AUTH_TOKEN_TYPE+' '+AUTH_TOKEN
                 token_data={'token' : token}
 
-                response_login_view = requests.post(url=login_view_url, data=token_data)
-                return Response({'response_login_view':response_login_view.status_code})
+                # response_login_view = requests.post(url=login_view_url, data=token_data)
+                # return Response({'request_data': token_data,'token':token,'response_login_view':response_login_view.status_code})
 
-                # try:
-                #     response_login_view = requests.post(url=login_view_url, data=token_data)
-                # except Exception as e:
-                #     view_response['succesful']=False
-                #     view_response['desc']=e
-                # else:           
-                #     if response_login_view.status_code==200:
-                #         view_response['succesful']=True
-                #         view_response['desc']=response_login_view.json()
+                try:
+                    response_login_view = requests.post(url=login_view_url, data=token_data)
+                except Exception as e:
+                    view_response['succesful']=False
+                    view_response['desc']=e
+                else:           
+                    if response_login_view.status_code==200:
+                        view_response['succesful']=True
+                        view_response['desc']=response_login_view.json()
 
         return Response(view_response)
 
@@ -149,11 +149,11 @@ class LoginView(APIView):
     def post(self, request, format=None):
         token = request.data['token']
         user_data = get_user_data(token)
-        return Response({'user_data':user_data})
+        # return Response({'user_data':user_data})
 
-        # if user_data is not None:
-        #     if user_data['is_maintainer']:
-        #         new_user = check_and_create_user(user_data)
-        # return Response({'New user created':new_user, 'User data':user_data})  
+        if user_data is not None:
+            if user_data['is_maintainer']:
+                new_user = check_and_create_user(user_data)
+        return Response({'New user created':new_user, 'User data':user_data})  
         # print(request.data)
         # return Response({'token recieved':request.data['token']})
