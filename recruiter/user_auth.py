@@ -1,10 +1,6 @@
-from http.client import responses
-from unicodedata import is_normalized
-from urllib import response
 import requests
 import environ
 from .models import Users
-from requests import exceptions
 from django.core.exceptions import ObjectDoesNotExist
 
 env = environ.Env()
@@ -15,8 +11,6 @@ def get_auth_code():
     request_data = {
         'response_type' : 'code',
         'client_id' : env('CLIENT_ID'),
-        # 'client_id' : 'https://channeli.in',
-        # 'client_id' : 'https://internet.channeli.in/oauth/authorise/',
         'redirect_url' : 'http://localhost:8000/auth/auth-token/'
     }
     response = requests.get(url=auth_code_url, headers=request_data)
@@ -41,14 +35,6 @@ def get_auth_code():
 def get_user_data(token):
     user_data_url = env('USER_DATA_URL')
     user_data_headers = {'Authorization' : token}
-    # return 'hello'
-    # response_user_data = requests.get(url=user_data_url, headers=user_data_headers)
-    # return response_user_data.json()
-    # roles = response_user_data.json()['person']['roles']
-    # for role in roles:
-    #     if role['role']=='Maintainer':
-    #         return role
-    # return response_user_data.json()['person']['roles']
 
     try:
         response_user_data = requests.get(url=user_data_url, headers=user_data_headers)
@@ -97,12 +83,14 @@ def get_user_data(token):
     return None
 
 def check_and_create_user(user_data):
+    user_dict={
+        'created' : False,
+        'user' : ''
+    }
     try:
         user=Users.objects.get(username=user_data['username'])
-        user.save()
-        return False
     except ObjectDoesNotExist:
-        new_user = Users(
+        user = Users(
             username=user_data['username'],
             email=user_data['email'],
             password=user_data['password'],
@@ -112,7 +100,9 @@ def check_and_create_user(user_data):
             year=user_data['year'],
             image=user_data['image'],
         )
-        new_user.save()
-        return True
+        user_dict['created']=True
+    user_dict['user']=user
+    user.save()
+    return user_dict
 
 # TO-DO : Exception handling : InvildJSONError handling in get_user_data function
