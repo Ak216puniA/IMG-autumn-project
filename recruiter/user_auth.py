@@ -6,31 +6,30 @@ from django.core.exceptions import ObjectDoesNotExist
 env = environ.Env()
 environ.Env.read_env()
 
-def get_auth_code():
-    auth_code_url=env('AUTH_CODE_URL')
-    request_data = {
-        'response_type' : 'code',
-        'client_id' : env('CLIENT_ID'),
-        'redirect_url' : 'http://localhost:8000/auth/auth-token/'
-    }
-    response = requests.get(url=auth_code_url, headers=request_data)
-    print(response)
-    return response.status_code
-    # try:
-    #     response = requests.post(url=auth_code_url, data=request_data)
-    #     if response.status_code==200:
-    #         return True
-    # # except exceptions.ConnectionError as e:
-    # #     print("Connection error when requesting for auth_code:")
-    # #     print(e)
-    # # except exceptions.Timeout as e:
-    # #     print("Timeout when requesting for auth_code:")
-    # #     print(e)
-    # except Exception as e:
-    #     print('Exception occured when requesting for AUTHERIZATION CODE:')
-    #     print(e)
-    return False
-
+# def get_auth_code():
+#     auth_code_url=env('AUTH_CODE_URL')
+#     request_data = {
+#         'response_type' : 'code',
+#         'client_id' : env('CLIENT_ID'),
+#         'redirect_url' : 'http://localhost:8000/auth/auth-token/'
+#     }
+#     response = requests.get(url=auth_code_url, headers=request_data)
+#     print(response)
+#     return response.status_code
+#     # try:
+#     #     response = requests.post(url=auth_code_url, data=request_data)
+#     #     if response.status_code==200:
+#     #         return True
+#     # # except exceptions.ConnectionError as e:
+#     # #     print("Connection error when requesting for auth_code:")
+#     # #     print(e)
+#     # # except exceptions.Timeout as e:
+#     # #     print("Timeout when requesting for auth_code:")
+#     # #     print(e)
+#     # except Exception as e:
+#     #     print('Exception occured when requesting for AUTHERIZATION CODE:')
+#     #     print(e)
+#     return False
 
 def get_user_data(token):
     user_data_url = env('USER_DATA_URL')
