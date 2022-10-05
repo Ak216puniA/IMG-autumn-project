@@ -62,94 +62,7 @@ class CandidateRoundModelViewSet(viewsets.ModelViewSet):
 class CandidateMarksModelViewSet(viewsets.ModelViewSet):
     queryset=CandidateMarks.objects.all()
     serializer_class=CandidateMarksSerializer
-    permission_classes=[YearWisePermission]
-
-# class GetAuthTokenView(APIView):
-#     permission_classes=[AllowAny]
-#     def get(self, request, format=None):
-#         view_response={
-#             'succesful' : False,
-#             'desc' : ''
-#         }
-
-#         token_url=env('AUTH_TOKEN_URL')
-#         request_data = {
-#             'grant_type':'authorization_code',
-#             'code' : request.query_params['code'],
-#             'redirect_url' : 'http://localhost:8000/auth/auth-token/',
-#             'client_id' : env('CLIENT_ID'),
-#             'client_secret' : env('CLIENT_SECRET'),
-#         }
-#         try:
-#             response_token = requests.post(url=token_url, data=request_data)
-#         # except exceptions.ConnectionError as e:
-#         #     message='Connection error when requesting for auth_token'
-#         #     desc=e
-#         # except exceptions.Timeout as e:
-#         #     message='Timeout when requesting for auth_token'
-#         #     desc=e
-#         # except exceptions.HTTPError as e:
-#         #     message='Invalid response when requesting for auth_token'
-#         #     desc=e
-#         # except Exception as e:
-#         #     message='Error occured when requesting for auth_token:'
-#         #     desc=e
-#         except Exception as e:
-#             view_response['succesful']=False
-#             view_response['desc']=e
-
-#         else:
-#             if response_token.status_code==200:
-#                 view_response['succesful']=False
-#                 view_response['desc']=response_token.json()
-
-#                 AUTH_TOKEN = response_token.json()['access_token']
-#                 AUTH_TOKEN_TYPE = response_token.json()['token_type']
-
-#                 # login_view_url = 'http://localhost:8000/auth/login/'
-#                 token = AUTH_TOKEN_TYPE+' '+AUTH_TOKEN
-#                 # token_data={'token' : token}
-
-#                 user_data = get_user_data(token)
-
-#                 if user_data is not None:
-#                     if user_data['is_maintainer']:
-#                         user_dict = check_and_create_user(user_data)
-#                         login(request,user_dict['user'])
-#                         view_response['succesful']=True
-#                         serializer=UserSerializer(user_dict['user'])
-#                         view_response['desc']=serializer.data
-#                 # return Response(user_dict)
-
-#                 # response_login_view = requests.post(url=login_view_url, data=token_data)
-
-#                 # return Response({'status':'Bug detected', 'response':response_login_view.text})
-
-#                 # try:
-#                 #     response_login_view = requests.post(url=login_view_url, data=token_data)
-#                 # except Exception as e:
-#                 #     view_response['succesful']=False
-#                 #     view_response['desc']=e
-#                 # else:           
-#                 #     if response_login_view.status_code==200:
-#                 #         view_response['succesful']=True
-#                 #         view_response['desc']=response_login_view.json()
-
-#         return Response(view_response)
-
-# class LoginView(APIView):
-
-#     permission_classes=[AllowAny]
-
-#     def post(self, request, format=None):
-#         token = request.data['token']
-#         user_data = get_user_data(token)
-
-#         if user_data is not None:
-#             if user_data['is_maintainer']:
-#                 user_dict = check_and_create_user(user_data)
-#                 login(request,user_dict['user'])
-#         return Response(user_dict)  
+    permission_classes=[YearWisePermission]  
 
 class LoginView(APIView):
     permission_classes=[AllowAny]
@@ -163,13 +76,11 @@ class LoginView(APIView):
         request_data = {
             'grant_type':'authorization_code',
             'code' : request.query_params['code'],
-            # 'redirect_url' : 'http://localhost:8000/auth/auth-token/',
             'redirect_url' : 'http://localhost:8000/auth/login/',
             'client_id' : env('CLIENT_ID'),
             'client_secret' : env('CLIENT_SECRET'),
         }
-        # response_token = requests.post(url=token_url, data=request_data)
-        # return Response({'status':response_token.status_code})
+    
         try:
             response_token = requests.post(url=token_url, data=request_data)
         # except exceptions.ConnectionError as e:
@@ -196,9 +107,7 @@ class LoginView(APIView):
                 AUTH_TOKEN = response_token.json()['access_token']
                 AUTH_TOKEN_TYPE = response_token.json()['token_type']
 
-                # login_view_url = 'http://localhost:8000/auth/login/'
                 token = AUTH_TOKEN_TYPE+' '+AUTH_TOKEN
-                # token_data={'token' : token}
 
                 user_data = get_user_data(token)
 
@@ -209,21 +118,6 @@ class LoginView(APIView):
                         view_response['succesful']=True
                         serializer=UserSerializer(user_dict['user'])
                         view_response['desc']=serializer.data
-                # return Response(user_dict)
-
-                # response_login_view = requests.post(url=login_view_url, data=token_data)
-
-                # return Response({'status':'Bug detected', 'response':response_login_view.text})
-
-                # try:
-                #     response_login_view = requests.post(url=login_view_url, data=token_data)
-                # except Exception as e:
-                #     view_response['succesful']=False
-                #     view_response['desc']=e
-                # else:           
-                #     if response_login_view.status_code==200:
-                #         view_response['succesful']=True
-                #         view_response['desc']=response_login_view.json()
 
         return Response(view_response)
 
